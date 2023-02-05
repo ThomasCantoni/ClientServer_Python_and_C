@@ -21,6 +21,10 @@
 #define FLT_EXPO_SIZE 5
 #define MSG_SIZE 50
 
+    WSADATA wsa;
+    SOCKET Server_socket, client_socket;
+    struct sockaddr_in server, client;
+    char *message, *client_message;
 
 float message_to_float(char* buffer, size_t position)
 {
@@ -112,18 +116,15 @@ int bomberman_graphics_init(SDL_Window **window, SDL_Renderer **renderer, SDL_Te
     return 0;
 }
 
-int main(int argc, char **argv)
+void bomberman_init_network()
 {
-    WSADATA wsa;
-    SOCKET Server_socket, client_socket;
-    struct sockaddr_in server, client;
-    char *message, *client_message;
+    
     // Initialize Winsock
     printf("\nInitializing Winsock...");
     if (WSAStartup(MAKEWORD(2,2), &wsa) != 0)
     {
         printf("Failed. Error Code : %d", WSAGetLastError());
-        return 1;
+        exit(-1);
     }
     printf("Initialized.\n");
 
@@ -144,7 +145,7 @@ int main(int argc, char **argv)
     if (bind(Server_socket, (struct sockaddr *)&server, sizeof(server)))
     {
         printf("Bind failed with error code : %d", WSAGetLastError());
-        return 1;
+        exit(-1);
     }
     printf("Bind done.\n");
 
@@ -194,6 +195,9 @@ int main(int argc, char **argv)
         inet_ntop (AF_INET, &client.sin_addr , addr_as_string , 64);
         //printf("received %d bytes from %s:%d\n", len, addr_as_string , ntohs(client.sin_port ));
     }
+}
+int main(int argc, char **argv)
+{
     
     // {
         // printf("Receive failed with error code : %d", WSAGetLastError());
@@ -212,7 +216,7 @@ int main(int argc, char **argv)
         // return 1;
     // }
     // printf("Sent message to client: %s\n", message);
-
+    bomberman_init_network();
     game_mode_t game_mode;
     cell_t map[64 * 64];
     player_t player;

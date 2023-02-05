@@ -57,6 +57,7 @@ int main()
     float x = 0;
     float y = 0;
 
+    // Initialize Winsock
     printf("\nInitialising Winsock...");
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
     {
@@ -67,8 +68,8 @@ int main()
     printf("Initialised.\n");
 
 
-    Server_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     // Create a socket
+    Server_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (Server_socket < 0)
     {
         printf("Could not create socket : %d", WSAGetLastError());
@@ -78,7 +79,6 @@ int main()
 
     inet_pton (AF_INET , "62.98.93.45" , &Server_addr.sin_addr ); // this will create a big endian 32 bit address
     Server_addr.sin_family = AF_INET ;
-
     Server_addr.sin_port = htons(8888);
 
     // Connect to remote server
